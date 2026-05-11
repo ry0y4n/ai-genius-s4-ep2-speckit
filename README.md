@@ -41,13 +41,18 @@ Open Copilot Chat and run the commands in order:
 
 ## 🔧 Local Development
 
+Prerequisites:
+
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- Node.js and npm
+
 ```bash
 # Run the API locally
-cd src/aigenius-api
-npm ci && npm start        # http://localhost:3000
+cd src/ai-genius-api
+dotnet run                 # http://localhost:5151
 
 # Run the React frontend locally
-cd src/aigenius-web
+cd src/ai-genius-web
 npm ci && npm run dev      # http://localhost:5173
 ```
 
