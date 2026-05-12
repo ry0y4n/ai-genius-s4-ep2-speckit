@@ -27,6 +27,7 @@ concurrency:
 
 env:
   AZURE_LOCATION: eastus2
+  AZURE_API_LOCATION: japanwest
   APP_NAME: aigenius
 
 jobs:
@@ -84,7 +85,9 @@ jobs:
             --resource-group "${{ steps.env-map.outputs.resource_group }}" \
             --template-file bicep/main.bicep \
             --parameters @"${{ steps.env-map.outputs.param_file }}" \
-            --parameters appName="${{ env.APP_NAME }}"
+            --parameters appName="${{ env.APP_NAME }}" \
+            --parameters location="${{ env.AZURE_LOCATION }}" \
+            --parameters apiLocation="${{ env.AZURE_API_LOCATION }}"
 
       - name: Capture deployment outputs
         id: capture-outputs

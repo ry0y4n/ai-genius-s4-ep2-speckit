@@ -15,6 +15,8 @@ This guide is the dry-run and live-show script. The live show starts from a prep
 | Resource group | `rg-aigenius-dev` |
 | Static Web App | `aigenius-frontend-dev` |
 | API App Service | `aigenius-api-dev` |
+| Static Web App location | `eastus2` |
+| API App Service location | `japanwest` |
 | Azure auth | GitHub OIDC with `azure/login@v2` |
 | Long-lived Azure secret | Not used |
 

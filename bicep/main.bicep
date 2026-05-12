@@ -10,6 +10,9 @@ param appName string = 'aigenius'
 @description('Azure region for all resources.')
 param location string = resourceGroup().location
 
+@description('Azure region for API App Service resources.')
+param apiLocation string = location
+
 @description('Deployment environment tag (dev | qa | prod).')
 @allowed(['dev', 'qa', 'prod'])
 param environment string = 'dev'
@@ -38,7 +41,7 @@ module webApp 'modules/webapp.bicep' = {
   name: 'webAppDeploy'
   params: {
     appName: appName
-    location: location
+    location: apiLocation
     environment: environment
     appServicePlanSku: appServicePlanSku
     allowedOrigins: [
