@@ -6,20 +6,20 @@ This guide is the dry-run and live-show script. The live show starts from a prep
 
 ## Demo Contract
 
-| Area | Decision |
-|------|----------|
-| Repository | `ry0y4n/ai-genius-s4-ep2-speckit` |
-| Starting feature | `001-bicep-cicd-workflow` complete |
-| Live feature | `002-frontend-ci-cd` |
-| Live Azure environment | `dev` |
-| Resource group | `rg-aigenius-dev` |
-| Static Web App | `aigenius-frontend-dev` |
-| API App Service | `aigenius-api-dev` |
-| Static Web App location | `eastus2` |
-| API App Service location | `japanwest` |
-| API code state | Pre-deployed manually from `src/ai-genius-api` |
-| Azure auth | GitHub OIDC with `azure/login@v2` |
-| Long-lived Azure secret | Not used |
+| Area                     | Decision                                       |
+| ------------------------ | ---------------------------------------------- |
+| Repository               | `ry0y4n/ai-genius-s4-ep2-speckit`              |
+| Starting feature         | `001-bicep-cicd-workflow` complete             |
+| Live feature             | `002-frontend-ci-cd`                           |
+| Live Azure environment   | `dev`                                          |
+| Resource group           | `rg-aigenius-dev`                              |
+| Static Web App           | `aigenius-frontend-dev`                        |
+| API App Service          | `aigenius-api-dev`                             |
+| Static Web App location  | `eastus2`                                      |
+| API App Service location | `japanwest`                                    |
+| API code state           | Pre-deployed manually from `src/ai-genius-api` |
+| Azure auth               | GitHub OIDC with `azure/login@v2`              |
+| Long-lived Azure secret  | Not used                                       |
 
 ## Instructor Preflight
 
@@ -401,14 +401,14 @@ Then run:
 
 Use this during dry runs.
 
-| Segment | Start | End | Duration | Notes |
-|---------|-------|-----|----------|-------|
-| Local app build check | | | | |
-| Infra workflow dev run | | | | Pre-live only |
-| Frontend specify to tasks | | | | |
-| Frontend implement | | | | |
-| Frontend deploy run | | | | |
-| Azure verification | | | | |
+| Segment                   | Start | End | Duration | Notes         |
+| ------------------------- | ----- | --- | -------- | ------------- |
+| Local app build check     |       |     |          |               |
+| Infra workflow dev run    |       |     |          | Pre-live only |
+| Frontend specify to tasks |       |     |          |               |
+| Frontend implement        |       |     |          |               |
+| Frontend deploy run       |       |     |          |               |
+| Azure verification        |       |     |          |               |
 
 ## Live Fallbacks
 
@@ -422,13 +422,13 @@ Prepare these before the show:
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| Azure login fails with `AADSTS70021` | Federated credential subject mismatch | Recreate the credential for `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev` |
-| Workflow cannot find `package-lock.json` | Running from wrong directory | Ensure `working-directory: src/ai-genius-web` and cache path `src/ai-genius-web/package-lock.json` |
-| Static Web Apps deploy cannot authenticate | Token retrieval failed | Check `az staticwebapp secrets list` uses `aigenius-frontend-dev` and `rg-aigenius-dev` |
-| Frontend deploys but cannot load episodes | Missing `VITE_API_URL` or API CORS | Check build env and App Service `AllowedOrigins__*` settings |
-| API health check expectation mismatch | Wrong expected JSON | Current API returns `status: healthy` from `/api/health` |
+| Symptom                                    | Likely cause                          | Fix                                                                                                |
+| ------------------------------------------ | ------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Azure login fails with `AADSTS70021`       | Federated credential subject mismatch | Recreate the credential for `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev`                 |
+| Workflow cannot find `package-lock.json`   | Running from wrong directory          | Ensure `working-directory: src/ai-genius-web` and cache path `src/ai-genius-web/package-lock.json` |
+| Static Web Apps deploy cannot authenticate | Token retrieval failed                | Check `az staticwebapp secrets list` uses `aigenius-frontend-dev` and `rg-aigenius-dev`            |
+| Frontend deploys but cannot load episodes  | Missing `VITE_API_URL` or API CORS    | Check build env and App Service `AllowedOrigins__*` settings                                       |
+| API health check expectation mismatch      | Wrong expected JSON                   | Current API returns `status: healthy` from `/api/health`                                           |
 
 ## Wrap-Up Message
 

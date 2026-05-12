@@ -81,9 +81,9 @@ Before the live show, keep these tabs or screenshots ready:
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| `AADSTS70021` | Federated credential subject mismatch | Confirm the subject uses `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev` |
-| `AuthorizationFailed` | App registration lacks Contributor | Re-run the role assignment or scope it to the subscription |
-| Missing parameter file | Wrong environment value | Use `dev`, `qa`, or `prod` |
-| Frontend deploy later cannot call API | API CORS or `VITE_API_URL` mismatch | Confirm Bicep deployed CORS settings and frontend build env |
+| Symptom                               | Likely cause                          | Fix                                                                             |
+| ------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------- |
+| `AADSTS70021`                         | Federated credential subject mismatch | Confirm the subject uses `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev` |
+| `AuthorizationFailed`                 | App registration lacks Contributor    | Re-run the role assignment or scope it to the subscription                      |
+| Missing parameter file                | Wrong environment value               | Use `dev`, `qa`, or `prod`                                                      |
+| Frontend deploy later cannot call API | API CORS or `VITE_API_URL` mismatch   | Confirm Bicep deployed CORS settings and frontend build env                     |

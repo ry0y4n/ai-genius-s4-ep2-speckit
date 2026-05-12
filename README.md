@@ -61,12 +61,12 @@ The frontend dev server is available at `http://localhost:5173`.
 
 The pre-live infrastructure workflow provisions these dev resources:
 
-| Resource | Name |
-|----------|------|
-| Resource group | `rg-aigenius-dev` |
-| App Service Plan | `aigenius-plan-dev` |
-| API App Service | `aigenius-api-dev` |
-| Static Web App | `aigenius-frontend-dev` |
+| Resource         | Name                    |
+| ---------------- | ----------------------- |
+| Resource group   | `rg-aigenius-dev`       |
+| App Service Plan | `aigenius-plan-dev`     |
+| API App Service  | `aigenius-api-dev`      |
+| Static Web App   | `aigenius-frontend-dev` |
 
 The Static Web App uses `eastus2`; the API App Service uses `japanwest` in this demo subscription because that region has available App Service quota.
 
