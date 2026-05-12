@@ -2,7 +2,7 @@
 // modules/webapp.bicep
 //
 // Provisions an Azure App Service Plan and Web App to run
-// the Node.js application from src/node-app.
+// the .NET API from src/ai-genius-api.
 // ============================================================
 
 @description('Base name used to derive resource names.')
@@ -19,7 +19,17 @@ param environment string
 param appServicePlanSku string = 'B1'
 
 @description('.NET runtime version for the web app.')
-param dotnetVersion string = 'DOTNETCORE|10.0'
+param dotnetVersion string = 'DOTNETCORE|9.0'
+
+@description('Origins allowed to call the API from browsers.')
+param allowedOrigins array = [
+  'http://localhost:5173'
+]
+
+var corsAppSettings = [for (origin, index) in allowedOrigins: {
+  name: 'AllowedOrigins__${index}'
+  value: origin
+}]
 
 // ── App Service Plan ─────────────────────────────────────────
 
@@ -28,7 +38,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   location: location
   tags: {
     app: appName
-    component: 'node-app'
+    component: 'api'
     environment: environment
     managedBy: 'bicep'
   }
@@ -44,11 +54,11 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
 // ── Web App ───────────────────────────────────────────────────
 
 resource webApp 'Microsoft.Web/sites@2023-01-01' = {
-  name: '${appName}-nodeapp-${environment}'
+  name: '${appName}-api-${environment}'
   location: location
   tags: {
     app: appName
-    component: 'node-app'
+    component: 'api'
     environment: environment
     managedBy: 'bicep'
   }
@@ -61,32 +71,30 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
       alwaysOn: appServicePlanSku != 'F1'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
-      appSettings: [
-        {
-          name: 'NODE_ENV'
-          value: environment
-        }
+      appSettings: concat([
         {
           name: 'ASPNETCORE_ENVIRONMENT'
           value: environment
         }
         {
-          name: 'WEBSITE_NODE_DEFAULT_VERSION'
-          value: '~20'
-        }
-        {
           name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
-          value: 'true'
+          value: 'false'
         }
-      ]
+      ], corsAppSettings)
     }
   }
 }
 
 // ── Outputs ──────────────────────────────────────────────────
 
+@description('Name of the web app.')
+output name string = webApp.name
+
 @description('Default hostname of the web app.')
 output hostname string = webApp.properties.defaultHostName
+
+@description('HTTPS URL of the web app.')
+output url string = 'https://${webApp.properties.defaultHostName}'
 
 @description('Resource ID of the web app.')
 output resourceId string = webApp.id

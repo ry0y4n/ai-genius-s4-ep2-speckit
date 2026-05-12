@@ -1,116 +1,64 @@
 # Workflow Interface Contract
 
-**Feature**: `001-bicep-cicd-workflow`  
-**File**: `.github/workflows/deploy-infra.yml`  
-**Date**: 2026-03-22
-
-This document defines the public interface of the GitHub Actions workflow: its inputs, outputs, secrets, and the guarantees it provides to callers and downstream jobs.
-
----
+**Feature**: `001-bicep-cicd-workflow`
+**File**: `.github/workflows/deploy-infra.yml`
+**Date**: 2026-05-12
 
 ## Triggers
 
 | Trigger | Condition | Default environment |
 |---------|-----------|---------------------|
-| `push` | Branch `main` | `development` → `dev` |
-| `workflow_dispatch` | Manual via GitHub UI | Input-driven (see below) |
+| `push` | Branch `main` | `dev` |
+| `workflow_dispatch` | Manual via GitHub UI | `dev` |
 
----
+## Inputs
 
-## Inputs (`workflow_dispatch`)
+| Input name | Type | Required | Default | Allowed values |
+|------------|------|----------|---------|----------------|
+| `environment` | `choice` | Yes | `dev` | `dev`, `qa`, `prod` |
 
-| Input name | Type | Required | Default | Allowed values | Description |
-|------------|------|----------|---------|----------------|-------------|
-| `environment` | `choice` | No | `development` | `development`, `staging`, `production` | Target deployment environment. Mapped internally to Bicep short forms `dev` / `qa` / `prod`. |
-
----
-
-## Required Secrets
-
-These GitHub repository secrets must be configured before any run can succeed.
+## Required Repository Secrets
 
 | Secret name | Description | Sensitive? |
 |-------------|-------------|------------|
-| `AZURE_CLIENT_ID` | Azure AD Application (client) ID for OIDC federated credential | No (identifier) |
-| `AZURE_TENANT_ID` | Azure AD Tenant ID | No (identifier) |
-| `AZURE_SUBSCRIPTION_ID` | Azure Subscription ID | No (identifier) |
+| `AZURE_CLIENT_ID` | Entra application client ID for OIDC | No, identifier |
+| `AZURE_TENANT_ID` | Azure tenant ID | No, identifier |
+| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID | No, identifier |
 
-> No passwords or client secrets are stored. Authentication uses OIDC workload identity federation exclusively.
+`AZURE_CREDENTIALS` is not used.
 
----
+## Azure Federated Credential
+
+For the live demo repository, configure this subject on the Entra application:
+
+```text
+repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main
+```
 
 ## Job Outputs
 
-The `infra` job emits these named outputs, consumable by sibling jobs via `needs.infra.outputs.<name>`.
+| Output name | Description |
+|-------------|-------------|
+| `resource-group` | Target Azure resource group |
+| `api-app-name` | API App Service name |
+| `api-app-url` | API App Service URL |
+| `static-web-app-name` | Static Web App name |
+| `static-web-app-url` | Static Web App URL |
 
-| Output name | Type | Description | Availability |
-|-------------|------|-------------|--------------|
-| `app-service-name` | string | Default hostname of the deployed Azure Web App | Non-empty after every successful `infra` run |
-| `static-web-app-token` | string | Deployment token for the Azure Static Web App | Non-empty after every successful `infra` run |
-
-**Consumption example** (in `deploy-api` or `deploy-web`):
-
-```yaml
-jobs:
-  deploy-api:
-    needs: [infra]
-    steps:
-      - run: echo "Deploying to ${{ needs.infra.outputs.app-service-name }}"
-  deploy-web:
-    needs: [infra]
-    steps:
-      - run: echo "SWA token available: ${{ needs.infra.outputs.static-web-app-token }}"
-```
-
----
-
-## Environment Variables (workflow-level)
-
-| Variable | Value | Description |
-|----------|-------|-------------|
-| `APP_NAME` | `aigenius` | Base name used to derive Azure resource names |
-| `AZURE_LOCATION` | `eastus2` | Azure region for resource group and resources |
-
-*Derived at runtime (set in `env-map` step)*:
-
-| Variable | Derived from | Example |
-|----------|-------------|---------|
-| `ENV_SHORT` | `EnvironmentMapping` | `dev` |
-| `AZURE_RESOURCE_GROUP` | `rg-aigenius-$ENV_SHORT` | `rg-aigenius-dev` |
-| `PARAM_FILE` | `bicep/parameters.$ENV_SHORT.json` | `bicep/parameters.dev.json` |
-
----
-
-## Concurrency Contract
-
-```yaml
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
-```
-
-- Only one workflow run is active per branch at any time.
-- A new push to `main` while a run is in progress will cancel the in-flight run.
-
----
+The workflow also writes these values to the GitHub Actions step summary for easy live-demo copy/paste.
 
 ## Guarantees
 
 | # | Guarantee | Failure mode |
 |---|-----------|--------------|
-| G1 | `deploy-api` and `deploy-web` never run if `infra` fails | GitHub Actions `needs:` dependency; failed `infra` causes downstream jobs to be skipped with status `skipped` |
-| G2 | All provisioned Azure resources carry tags `app`, `environment`, `managedBy=bicep` | Tag definitions are in Bicep modules; pipeline will fail if Bicep validation fails |
-| G3 | No long-lived Azure credential is stored | `azure/login@v2` with `id-token: write` — short-lived OIDC JWT exchanged at runtime |
-| G4 | Stale runs are cancelled on new push | `concurrency.cancel-in-progress: true` |
-| G5 | Missing parameter file causes immediate failure | `az deployment group create` exits non-zero before any Azure resource is mutated |
-
----
+| G1 | Login uses OIDC only | Missing or mismatched federated credential causes Azure login to fail |
+| G2 | Resource group exists before Bicep deploy | `az group create` fails before template deployment |
+| G3 | Parameter file matches selected environment | Missing `bicep/parameters.<env>.json` fails before Azure resources are changed |
+| G4 | Later workflows can target stable dev resources | Outputs and run summary show the exact names and URLs |
 
 ## Breaking Changes
 
-Any of the following changes to this workflow constitute a **breaking change** and require a new spec:
-
-- Renaming job outputs (`app-service-name`, `static-web-app-token`)
-- Removing a trigger (`push` on `main` or `workflow_dispatch`)
-- Removing or renaming required secrets
-- Changing the `concurrency.group` key scheme
+- Renaming required secrets.
+- Removing OIDC permissions.
+- Changing resource naming without updating the live guide.
+- Exposing Static Web App deployment tokens from the infra workflow.

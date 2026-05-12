@@ -41,6 +41,10 @@ module webApp 'modules/webapp.bicep' = {
     location: location
     environment: environment
     appServicePlanSku: appServicePlanSku
+    allowedOrigins: [
+      'http://localhost:5173'
+      staticWebApp.outputs.url
+    ]
   }
 }
 
@@ -49,11 +53,17 @@ module webApp 'modules/webapp.bicep' = {
 @description('URL of the deployed React static web app.')
 output staticWebAppUrl string = staticWebApp.outputs.url
 
-@description('Default hostname of the Node.js web app.')
-output nodeAppHostname string = webApp.outputs.hostname
+@description('Name of the deployed React static web app.')
+output staticWebAppName string = staticWebApp.outputs.name
+
+@description('Name of the deployed API App Service.')
+output apiAppName string = webApp.outputs.name
+
+@description('Default hostname of the deployed API App Service.')
+output apiAppHostname string = webApp.outputs.hostname
+
+@description('URL of the deployed API App Service.')
+output apiAppUrl string = webApp.outputs.url
 
 @description('Resource ID of the App Service.')
-output nodeAppResourceId string = webApp.outputs.resourceId
-
-@description('Deployment token for the Azure Static Web App CI/CD.')
-output staticWebAppToken string = staticWebApp.outputs.deploymentToken
+output apiAppResourceId string = webApp.outputs.resourceId
