@@ -45,3 +45,4 @@ This feature intentionally does not create `deploy-web.yml`, `deploy-api.yml`, o
 
 Successful dev infra run: https://github.com/ry0y4n/ai-genius-s4-ep2-speckit/actions/runs/25716592506
 Fallback resource URLs: https://aigenius-api-dev.azurewebsites.net and https://red-river-086c86b0f.7.azurestaticapps.net
+Pre-live API status endpoint verified: https://aigenius-api-dev.azurewebsites.net/api/status

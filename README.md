@@ -70,6 +70,8 @@ The pre-live infrastructure workflow provisions these dev resources:
 
 The Static Web App uses `eastus2`; the API App Service uses `japanwest` in this demo subscription because that region has available App Service quota.
 
+For the live frontend CI/CD demo, the API code is pre-deployed manually to `aigenius-api-dev`. The API deployment workflow is still intentionally left for a later feature.
+
 Required GitHub repository secrets:
 
 ```text

@@ -17,6 +17,7 @@ This guide is the dry-run and live-show script. The live show starts from a prep
 | API App Service | `aigenius-api-dev` |
 | Static Web App location | `eastus2` |
 | API App Service location | `japanwest` |
+| API code state | Pre-deployed manually from `src/ai-genius-api` |
 | Azure auth | GitHub OIDC with `azure/login@v2` |
 | Long-lived Azure secret | Not used |
 
@@ -134,6 +135,7 @@ Expected resources:
 - `aigenius-frontend-dev`
 
 Keep the successful workflow run and Azure resource group open as fallback tabs.
+Also keep `https://aigenius-api-dev.azurewebsites.net/api/status` available so the frontend deployment can prove the backend is reachable.
 
 ## Part 0: Demo Apps
 
