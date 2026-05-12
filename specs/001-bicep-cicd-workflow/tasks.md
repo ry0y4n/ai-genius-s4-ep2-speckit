@@ -29,9 +29,9 @@
 
 - [X] T016 Document required repository secrets in the workflow contract and quickstart.
 - [X] T017 Document that this feature is pre-live infrastructure only; frontend and API deployment workflows are later specs.
-- [ ] T018 Run the `dev` infrastructure workflow in GitHub Actions before the live show.
-- [ ] T019 Verify `rg-aigenius-dev` contains the expected Azure resources.
-- [ ] T020 Capture fallback screenshots or browser tabs for the successful workflow run and Azure resources.
+- [X] T018 Run the `dev` infrastructure workflow in GitHub Actions before the live show.
+- [X] T019 Verify `rg-aigenius-dev` contains the expected Azure resources.
+- [X] T020 Capture fallback screenshots or browser tabs for the successful workflow run and Azure resources.
 
 ## Dependencies
 
@@ -42,3 +42,6 @@ T018 depends on all implementation tasks.
 ## Notes
 
 This feature intentionally does not create `deploy-web.yml`, `deploy-api.yml`, or `ci.yml`. Those files are generated during later live demo features.
+
+Successful dev infra run: https://github.com/ry0y4n/ai-genius-s4-ep2-speckit/actions/runs/25716592506
+Fallback resource URLs: https://aigenius-api-dev.azurewebsites.net and https://red-river-086c86b0f.7.azurestaticapps.net
