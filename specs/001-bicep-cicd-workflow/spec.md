@@ -81,7 +81,7 @@ As the instructor, I need the infrastructure workflow to expose stable names and
 - **Resource group**: `rg-aigenius-<environment>`, with `rg-aigenius-dev` used for the live demo.
 - **API App Service**: Hosts `src/ai-genius-api` after the later API deployment workflow is generated.
 - **Static Web App**: Hosts `src/ai-genius-web` after the later frontend deployment workflow is generated.
-- **OIDC federated credential**: Azure trust entry for `repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main`.
+- **OIDC federated credential**: Azure trust entry for GitHub Environment subjects such as `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev`.
 
 ## Success Criteria
 

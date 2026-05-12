@@ -9,10 +9,10 @@
       "value": "prod"
     },
     "appServicePlanSku": {
-      "value": "B2"
+      "value": "F1"
     },
     "staticWebAppSku": {
-      "value": "Standard"
+      "value": "Free"
     }
   }
 }

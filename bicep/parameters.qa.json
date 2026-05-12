@@ -9,7 +9,7 @@
       "value": "qa"
     },
     "appServicePlanSku": {
-      "value": "B1"
+      "value": "F1"
     },
     "staticWebAppSku": {
       "value": "Free"

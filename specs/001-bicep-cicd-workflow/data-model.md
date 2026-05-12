@@ -29,7 +29,7 @@
 | Client ID | `AZURE_CLIENT_ID` repository secret |
 | Tenant ID | `AZURE_TENANT_ID` repository secret |
 | Subscription ID | `AZURE_SUBSCRIPTION_ID` repository secret |
-| Federated subject | `repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main` |
+| Federated subject | `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:<environment>` |
 
 ### 4. `BicepDeployment`
 

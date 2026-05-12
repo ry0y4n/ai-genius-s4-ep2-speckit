@@ -78,20 +78,18 @@ AZURE_SUBSCRIPTION_ID
 
 ### Azure OIDC Setup
 
-Create the Entra application and federated credential once:
+Create the Entra application and federated credentials once. Because the workflow uses GitHub Environments, configure one subject per environment:
 
 ```bash
 APP_ID=$(az ad app create --display-name "ai-genius-cicd" --query appId -o tsv)
-az ad sp create --id "$APP_ID"
+APP_OBJECT_ID=$(az ad app show --id "$APP_ID" --query id -o tsv)
+SP_OBJECT_ID=$(az ad sp create --id "$APP_ID" --query id -o tsv)
 
-az ad app federated-credential create \
-  --id "$APP_ID" \
-  --parameters '{
-    "name": "github-main",
-    "issuer": "https://token.actions.githubusercontent.com",
-    "subject": "repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main",
-    "audiences": ["api://AzureADTokenExchange"]
-  }'
+for ENVIRONMENT in dev qa prod; do
+  az ad app federated-credential create \
+    --id "$APP_OBJECT_ID" \
+    --parameters "{\"name\":\"github-env-${ENVIRONMENT}\",\"issuer\":\"https://token.actions.githubusercontent.com\",\"subject\":\"repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:${ENVIRONMENT}\",\"audiences\":[\"api://AzureADTokenExchange\"]}"
+done
 ```
 
 Grant access for the demo subscription:
@@ -100,7 +98,8 @@ Grant access for the demo subscription:
 SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 
 az role assignment create \
-  --assignee "$APP_ID" \
+  --assignee-object-id "$SP_OBJECT_ID" \
+  --assignee-principal-type ServicePrincipal \
   --role Contributor \
   --scope "/subscriptions/$SUBSCRIPTION_ID"
 ```
@@ -421,7 +420,7 @@ Prepare these before the show:
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Azure login fails with `AADSTS70021` | Federated credential subject mismatch | Recreate the credential for `repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main` |
+| Azure login fails with `AADSTS70021` | Federated credential subject mismatch | Recreate the credential for `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev` |
 | Workflow cannot find `package-lock.json` | Running from wrong directory | Ensure `working-directory: src/ai-genius-web` and cache path `src/ai-genius-web/package-lock.json` |
 | Static Web Apps deploy cannot authenticate | Token retrieval failed | Check `az staticwebapp secrets list` uses `aigenius-frontend-dev` and `rg-aigenius-dev` |
 | Frontend deploys but cannot load episodes | Missing `VITE_API_URL` or API CORS | Check build env and App Service `AllowedOrigins__*` settings |

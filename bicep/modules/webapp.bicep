@@ -16,7 +16,7 @@ param environment string
 
 @description('App Service Plan SKU.')
 @allowed(['F1', 'B1', 'B2', 'S1'])
-param appServicePlanSku string = 'B1'
+param appServicePlanSku string = 'F1'
 
 @description('.NET runtime version for the web app.')
 param dotnetVersion string = 'DOTNETCORE|9.0'

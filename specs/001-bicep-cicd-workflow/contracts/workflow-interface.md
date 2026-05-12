@@ -29,10 +29,12 @@
 
 ## Azure Federated Credential
 
-For the live demo repository, configure this subject on the Entra application:
+For the live demo repository, configure these subjects on the Entra application because the workflow uses GitHub Environments:
 
 ```text
-repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main
+repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev
+repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:qa
+repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:prod
 ```
 
 ## Job Outputs

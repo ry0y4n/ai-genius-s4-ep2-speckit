@@ -16,16 +16,14 @@ Use this before the live show to make sure the Azure baseline is ready.
 
 ```bash
 APP_ID=$(az ad app create --display-name "ai-genius-cicd" --query appId -o tsv)
-az ad sp create --id "$APP_ID"
+APP_OBJECT_ID=$(az ad app show --id "$APP_ID" --query id -o tsv)
+SP_OBJECT_ID=$(az ad sp create --id "$APP_ID" --query id -o tsv)
 
-az ad app federated-credential create \
-  --id "$APP_ID" \
-  --parameters '{
-    "name": "github-main",
-    "issuer": "https://token.actions.githubusercontent.com",
-    "subject": "repo:ry0y4n/ai-genius-s4-ep2-speckit:ref:refs/heads/main",
-    "audiences": ["api://AzureADTokenExchange"]
-  }'
+for ENVIRONMENT in dev qa prod; do
+  az ad app federated-credential create \
+    --id "$APP_OBJECT_ID" \
+    --parameters "{\"name\":\"github-env-${ENVIRONMENT}\",\"issuer\":\"https://token.actions.githubusercontent.com\",\"subject\":\"repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:${ENVIRONMENT}\",\"audiences\":[\"api://AzureADTokenExchange\"]}"
+done
 ```
 
 ## Step 2: Grant Azure Access
@@ -85,7 +83,7 @@ Before the live show, keep these tabs or screenshots ready:
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `AADSTS70021` | Federated credential subject mismatch | Confirm the subject uses `ry0y4n/ai-genius-s4-ep2-speckit` and `refs/heads/main` |
+| `AADSTS70021` | Federated credential subject mismatch | Confirm the subject uses `repo:ry0y4n/ai-genius-s4-ep2-speckit:environment:dev` |
 | `AuthorizationFailed` | App registration lacks Contributor | Re-run the role assignment or scope it to the subscription |
 | Missing parameter file | Wrong environment value | Use `dev`, `qa`, or `prod` |
 | Frontend deploy later cannot call API | API CORS or `VITE_API_URL` mismatch | Confirm Bicep deployed CORS settings and frontend build env |
